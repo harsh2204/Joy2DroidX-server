@@ -96,7 +96,7 @@ def main():
 	CLIENTS = {}
 	DEVICES = {}
 
-	sio = Server(logger=args.debug, engineio_logger=args.debug)
+	sio = Server(logger=args.debug, engineio_logger=args.debug, cors_allowed_origins='http://192.168.2.92:8000')
 	app = WSGIApp(sio)
 
 	@sio.event

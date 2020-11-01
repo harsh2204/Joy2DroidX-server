@@ -52,7 +52,7 @@ class X360Device(Device):
 			(e.ABS_RX, AbsInfo(value=0, min=0, max=255, fuzz=0, flat=0, resolution=0)),
 			(e.ABS_RY, AbsInfo(value=0, min=0, max=255, fuzz=0, flat=0, resolution=0)),
 			(e.ABS_HAT2Y, AbsInfo(value=0, min=0, max=255, fuzz=0, flat=0, resolution=0)), # Left Trigger
-			(e.ABS_HAT2x, AbsInfo(value=0, min=0, max=255, fuzz=0, flat=0, resolution=0)), # Right Trigger
+			(e.ABS_HAT2X, AbsInfo(value=0, min=0, max=255, fuzz=0, flat=0, resolution=0)), # Right Trigger
 		],
 	}
 	buttons = {
