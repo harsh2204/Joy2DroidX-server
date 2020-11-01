@@ -51,8 +51,8 @@ class X360Device(Device):
 			(e.ABS_Y, AbsInfo(value=0, min=0, max=255, fuzz=0, flat=0, resolution=0)),
 			(e.ABS_RX, AbsInfo(value=0, min=0, max=255, fuzz=0, flat=0, resolution=0)),
 			(e.ABS_RY, AbsInfo(value=0, min=0, max=255, fuzz=0, flat=0, resolution=0)),
-			(e.ABS_HAT2Y, AbsInfo(value=0, min=0, max=255, fuzz=0, flat=0, resolution=0)), # Left Trigger
-			(e.ABS_HAT2X, AbsInfo(value=0, min=0, max=255, fuzz=0, flat=0, resolution=0)), # Right Trigger
+			(e.ABS_HAT2Y, AbsInfo(value=0, min=0, max=511, fuzz=0, flat=0, resolution=0)), # Left Trigger
+			(e.ABS_HAT2X, AbsInfo(value=0, min=0, max=511, fuzz=0, flat=0, resolution=0)), # Right Trigger
 		],
 	}
 	buttons = {
@@ -99,6 +99,12 @@ class X360Device(Device):
 		if key in self.buttons:
 			logger.debug(f'Sending button event::{e.keys[self.buttons[key]]}: {value}')
 			self._ui.write(e.EV_KEY, self.buttons[key], value)
+			self._ui.syn()
+		elif 'trigger' in key:
+			print(value)
+			coord = round(value * 511)
+			logger.debug(f'Sending axis event::{e.ABS[self.axes[key]]}: {coord}')
+			self._ui.write(e.EV_ABS, self.axes[key], coord)
 			self._ui.syn()
 		elif key in self.axes:
 			coord = round(127 * value) + 127
