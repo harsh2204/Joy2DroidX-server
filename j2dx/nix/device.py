@@ -42,15 +42,17 @@ class X360Device(Device):
 			e.BTN_TRIGGER_HAPPY3,
 			e.BTN_TRIGGER_HAPPY4,
 			e.BTN_TL,
-			e.BTN_TL2,
+			# e.BTN_TL2,#Replaced by Axis
 			e.BTN_TR,
-			e.BTN_TR2,
+			# e.BTN_TR2,#Replaced by Axis
 		],
 		e.EV_ABS: [
 			(e.ABS_X, AbsInfo(value=0, min=0, max=255, fuzz=0, flat=0, resolution=0)),
 			(e.ABS_Y, AbsInfo(value=0, min=0, max=255, fuzz=0, flat=0, resolution=0)),
 			(e.ABS_RX, AbsInfo(value=0, min=0, max=255, fuzz=0, flat=0, resolution=0)),
 			(e.ABS_RY, AbsInfo(value=0, min=0, max=255, fuzz=0, flat=0, resolution=0)),
+			(e.ABS_HAT2Y, AbsInfo(value=0, min=0, max=255, fuzz=0, flat=0, resolution=0)), # Left Trigger
+			(e.ABS_HAT2x, AbsInfo(value=0, min=0, max=255, fuzz=0, flat=0, resolution=0)), # Right Trigger
 		],
 	}
 	buttons = {
@@ -60,9 +62,9 @@ class X360Device(Device):
 		'left-stick-press': e.BTN_THUMBL,
 		'right-stick-press': e.BTN_THUMBR,
 		'left-bumper': e.BTN_TL,
-		'left-trigger': e.BTN_TL2,
+		# 'left-trigger': e.BTN_TL2,
 		'right-bumper': e.BTN_TR,
-		'right-trigger': e.BTN_TR2,
+		# 'right-trigger': e.BTN_TR2,
 		'up-button': e.BTN_TRIGGER_HAPPY3,
 		'right-button': e.BTN_TRIGGER_HAPPY2,
 		'down-button': e.BTN_TRIGGER_HAPPY4,
@@ -77,6 +79,8 @@ class X360Device(Device):
 		'left-stick-Y': e.ABS_Y,
 		'right-stick-X': e.ABS_RX,
 		'right-stick-Y': e.ABS_RY,
+		'left-trigger': e.ABS_HAT2Y,
+		'right-trigger': e.ABS_HAT2X,
 	}
 
 	def __init__(self, device, addr):
@@ -102,7 +106,7 @@ class X360Device(Device):
 			self._ui.write(e.EV_ABS, self.axes[key], coord)
 			self._ui.syn()
 
-
+# DS4 Doesn't have trigger buttons changed to axes
 class DS4Device(Device):
 
 	capabilities = {
@@ -153,9 +157,9 @@ class DS4Device(Device):
 		'left-stick-press': e.BTN_THUMBL,
 		'right-stick-press': e.BTN_THUMBR,
 		'left-bumper': e.BTN_TL,
-		'left-trigger': e.BTN_TL2,
+		# 'left-trigger': e.BTN_TL2,
 		'right-bumper': e.BTN_TR,
-		'right-trigger': e.BTN_TR2,
+		# 'right-trigger': e.BTN_TR2,
 		'y-button': e.BTN_NORTH,
 		'x-button': e.BTN_EAST,
 		'a-button': e.BTN_SOUTH,
