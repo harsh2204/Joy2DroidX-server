@@ -96,10 +96,9 @@ def main():
 	CLIENTS = {}
 	DEVICES = {}
 
-	frontend_ip = 'http://' + default_host() + ':8000'
-
-        # I would build my own proxy, but this seems to be a workable alt for now. Plus, I need to switch away from running two servers at some point anyway.
-	sio = Server(logger=args.debug, engineio_logger=args.debug, cors_allowed_origins=frontend_ip)
+#	frontend_ip = 'http://' + default_host() + ':8000'
+         # I need to switch away from running two servers at some point anyway. 
+	sio = Server(logger=args.debug, engineio_logger=args.debug, cors_allowed_origins='*')
 	app = WSGIApp(sio)
 
 	@sio.event
