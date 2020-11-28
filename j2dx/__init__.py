@@ -44,6 +44,11 @@ def parse_args():
 		help='Hostname or IP address the server will listen on.',
 	)
 	parser.add_argument(
+		'-fp', '--frontend-port',
+		type=int, default=8000,
+		help='Port the server frontend is being hosted on. Defaults to 8000.',
+	)
+	parser.add_argument(
 		'-p', '--port',
 		type=int, default=8013,
 		help='Port the server will listen on. Defaults to 8013.',
@@ -137,8 +142,9 @@ def main():
 			f'Please specify a different port with -p option.'
 		)
 	logger.info(f'Listening on http://{host}:{args.port}/')
+	logger.info(f'Frontend Port on http://{host}:{args.frontend_port}/')
 	qr = qrcode.QRCode()
-	qr.add_data(f'j2dx://{host}:{args.port}/')
+	qr.add_data(f'http://{host}:{args.frontend_port}/')
 	if platform.system() == 'Windows':
 		import colorama
 		colorama.init()
