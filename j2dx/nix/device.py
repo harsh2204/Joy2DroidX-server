@@ -49,10 +49,12 @@ class X360Device(Device):
 		e.EV_ABS: [
 			(e.ABS_X, AbsInfo(value=0, min=0, max=255, fuzz=0, flat=0, resolution=0)),
 			(e.ABS_Y, AbsInfo(value=0, min=0, max=255, fuzz=0, flat=0, resolution=0)),
+			(e.ABS_Z, AbsInfo(value=0, min=0, max=511, fuzz=0, flat=0, resolution=0)), # Left Trigger
+			(e.ABS_RZ, AbsInfo(value=0, min=0, max=511, fuzz=0, flat=0, resolution=0)), # Right Trigger
 			(e.ABS_RX, AbsInfo(value=0, min=0, max=255, fuzz=0, flat=0, resolution=0)),
 			(e.ABS_RY, AbsInfo(value=0, min=0, max=255, fuzz=0, flat=0, resolution=0)),
-			(e.ABS_HAT2Y, AbsInfo(value=0, min=0, max=511, fuzz=0, flat=0, resolution=0)), # Left Trigger
-			(e.ABS_HAT2X, AbsInfo(value=0, min=0, max=511, fuzz=0, flat=0, resolution=0)), # Right Trigger
+			(e.ABS_HAT0X, AbsInfo(value=0, min=-1, max=1, fuzz=0, flat=0, resolution=0)), # DPAD X
+			(e.ABS_HAT0Y, AbsInfo(value=0, min=-1, max=1, fuzz=0, flat=0, resolution=0)), # DPAD Y
 		],
 	}
 	buttons = {
@@ -65,10 +67,6 @@ class X360Device(Device):
 		# 'left-trigger': e.BTN_TL2,
 		'right-bumper': e.BTN_TR,
 		# 'right-trigger': e.BTN_TR2,
-		'up-button': e.BTN_TRIGGER_HAPPY3,
-		'right-button': e.BTN_TRIGGER_HAPPY2,
-		'down-button': e.BTN_TRIGGER_HAPPY4,
-		'left-button': e.BTN_TRIGGER_HAPPY1,
 		'y-button': e.BTN_Y,
 		'x-button': e.BTN_X,
 		'a-button': e.BTN_A,
@@ -79,18 +77,24 @@ class X360Device(Device):
 		'left-stick-Y': e.ABS_Y,
 		'right-stick-X': e.ABS_RX,
 		'right-stick-Y': e.ABS_RY,
-		'left-trigger': e.ABS_HAT2Y,
-		'right-trigger': e.ABS_HAT2X,
+		'left-trigger': e.ABS_Z,
+		'right-trigger': e.ABS_RZ,
+	}
+	dpad = {
+		'up-button': e.ABS_HAT0Y,
+		'right-button': e.ABS_HAT0X,
+		'down-button': e.ABS_HAT0Y,
+		'left-button': e.ABS_HAT0X,
 	}
 
 	def __init__(self, device, addr):
 		super().__init__(device, addr)
-		self.type = "Xbox 360 Controller"
+		self.type = "Microsoft X-Box One pad"
 		self._ui = UInput(
 			events=self.capabilities,
 			name=self.type,
 			vendor=0x045e,
-			product=0x028e,
+			product=0x02d1, #0x028e,
 			version=0x0110,
 			bustype=e.BUS_USB,
 		)
@@ -100,6 +104,15 @@ class X360Device(Device):
 			logger.debug(f'Sending button event::{e.keys[self.buttons[key]]}: {value}')
 			self._ui.write(e.EV_KEY, self.buttons[key], value)
 			self._ui.syn()
+		elif key in self.dpad:
+			if key in {'up-button', 'left-button'}:
+				value = -1 if value else 0
+			else:
+				value = 1 if value else 0
+			logger.debug(f'Sending axis event::{e.ABS[self.dpad[key]]}: {value}')
+			self._ui.write(e.EV_ABS, self.dpad[key], value)
+			self._ui.syn()
+                        
 		elif 'trigger' in key:
 			print(value)
 			coord = round(value * 511)
