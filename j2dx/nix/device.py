@@ -114,7 +114,6 @@ class X360Device(Device):
 			self._ui.syn()
                         
 		elif 'trigger' in key:
-			print(value)
 			coord = round(value * 511)
 			logger.debug(f'Sending axis event::{e.ABS[self.axes[key]]}: {coord}')
 			self._ui.write(e.EV_ABS, self.axes[key], coord)
