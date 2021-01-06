@@ -74,11 +74,24 @@ def get_logger(debug):
 	return (logging.getLogger('J2DX.server'), wsgi_logger)
 
 
+def get_ip_address(ifname):
+    import fcntl
+    import struct
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    return socket.inet_ntoa(fcntl.ioctl(
+        s.fileno(),
+        0x8915,  # SIOCGIFADDR
+        struct.pack('256s', bytes(ifname[:15], 'utf-8'))
+    )[20:24])
+
+
 def default_host():
 	sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 	try:
 		sock.connect(('1.255.255.255', 1))
 		IP = sock.getsockname()[0]
+	except OSError:
+		IP = get_ip_address('wlan1')
 	except IndexError:
 		IP = '127.0.0.1'
 	finally:
@@ -101,8 +114,6 @@ def main():
 	CLIENTS = {}
 	DEVICES = {}
 
-#	frontend_ip = 'http://' + default_host() + ':8000'
-         # I need to switch away from running two servers at some point anyway. 
 	sio = Server(logger=args.debug, engineio_logger=args.debug, cors_allowed_origins='*')
 	app = WSGIApp(sio)
 
